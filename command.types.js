@@ -11,8 +11,8 @@ exports.allowedSymbols = '<>-+,.[]';
 
 exports.fromSymbol = (symbol) => {
     switch (symbol) {
-        case '>': return this.left;
-        case '<': return this.right;
+        case '>': return this.right;
+        case '<': return this.left;
         case '-': return this.decrement;
         case '+': return this.increment;
         case '.': return this.read;
@@ -24,8 +24,8 @@ exports.fromSymbol = (symbol) => {
 
 exports.fromName = (name) => {
     switch (name) {
-        case this.left: return '>';
-        case this.right: return '<';
+        case this.left: return '<';
+        case this.right: return '>';
         case this.increment: return '+';
         case this.decrement: return '-';
         case this.read: return '.';
