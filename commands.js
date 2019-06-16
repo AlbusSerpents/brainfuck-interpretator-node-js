@@ -18,7 +18,7 @@ exports.execute = (commands, inputArray) => {
 }
 
 function executeAll(commands, tape, inputArray) {
-    return commands.reduce(executeCommand, tape, inputArray);
+    return commands.reduce((tape, command) => executeCommand(tape, command, inputArray), tape);
 }
 
 function executeCommand({ value, history }, command, inputArray) {
@@ -46,7 +46,7 @@ function executeCommand({ value, history }, command, inputArray) {
         case types.write: {
             const result = write(value, inputArray);
             history.push({ tape: result.tape, currentCommand: `${types.fromName(command.name)} ${result.input}` });
-            return { value: newValue, history };
+            return { value: result.tape, history };
         }
         case types.read: {
             const newValue = read(value);
@@ -106,5 +106,5 @@ function loop({ value, history = [] }, command, inputArray) {
     const fullHistory = [...history, loopStarted, ...loopResult.history, loopEnded];
     const newState = { value: loopResult.value, history: fullHistory };
 
-    return currentHead === 0 ? newState : executeCommand(newState, command);
+    return currentHead === 0 ? newState : executeCommand(newState, command, inputArray);
 }
