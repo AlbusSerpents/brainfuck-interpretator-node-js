@@ -44,8 +44,8 @@ function executeCommand({ value, history }, command, inputArray) {
             return { value: newValue, history };
         }
         case types.write: {
-            const newValue = write(value, inputArray);
-            history.push({ tape: newValue, currentCommand: `${command.name} ${command.value}` });
+            const result = write(value, inputArray);
+            history.push({ tape: result.tape, currentCommand: `${command.name} ${result.input}` });
             return { value: newValue, history };
         }
         case types.read: {
@@ -87,7 +87,7 @@ function write({ left, right, output }, inputArray) {
         throw errorTypes.unexpectedInputRequest();
     } else {
         const newValue = inputArray.shift();
-        return { left, current: newValue, right, output };
+        return { tape: { left, current: newValue, right, output }, input: newValue };
     }
 }
 
