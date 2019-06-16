@@ -21,3 +21,16 @@ exports.fromSymbol = (symbol) => {
         case ']': return this.loopEnd;
     }
 }
+
+exports.fromName = (name) => {
+    switch (name) {
+        case this.left: return '>';
+        case this.right: return '<';
+        case this.increment: return '+';
+        case this.decrement: return '-';
+        case this.read: return '.';
+        case this.write: return ',';
+        case this.loopStart: return '[';
+        case this.loopEnd: return ']';
+    }
+}

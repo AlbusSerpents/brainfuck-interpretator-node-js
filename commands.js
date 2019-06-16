@@ -25,32 +25,32 @@ function executeCommand({ value, history }, command, inputArray) {
     switch (command.name) {
         case types.left: {
             const newValue = moveLeft(value);
-            history.push({ tape: newValue, currentCommand: command.name });
+            history.push({ tape: newValue, currentCommand: types.fromName(command.name) });
             return { value: newValue, history };
         }
         case types.right: {
             const newValue = moveRight(value);
-            history.push({ tape: newValue, currentCommand: command.name });
+            history.push({ tape: newValue, currentCommand: types.fromName(command.name) });
             return { value: newValue, history };
         }
         case types.increment: {
             const newValue = increment(value);
-            history.push({ tape: newValue, currentCommand: command.name });
+            history.push({ tape: newValue, currentCommand: types.fromName(command.name) });
             return { value: newValue, history };
         }
         case types.decrement: {
             const newValue = decrement(value);
-            history.push({ tape: newValue, currentCommand: command.name });
+            history.push({ tape: newValue, currentCommand: types.fromName(command.name) });
             return { value: newValue, history };
         }
         case types.write: {
             const result = write(value, inputArray);
-            history.push({ tape: result.tape, currentCommand: `${command.name} ${result.input}` });
+            history.push({ tape: result.tape, currentCommand: `${types.fromName(command.name)} ${result.input}` });
             return { value: newValue, history };
         }
         case types.read: {
             const newValue = read(value);
-            history.push({ tape: newValue, currentCommand: command.name });
+            history.push({ tape: newValue, currentCommand: types.fromName(command.name) });
             return { value: newValue, history };
         }
         case types.loop: {
@@ -100,8 +100,8 @@ function loop({ value, history = [] }, command, inputArray) {
     const loopResult = executeAll(command.children, { value, history: [] }, inputArray);
     const currentHead = loopResult.value.current;
 
-    const loopStarted = { currentCommand: types.loopStart };
-    const loopEnded = { currentCommand: `${types.loopEnd} ${currentHead}` }
+    const loopStarted = { currentCommand: types.fromName(types.loopStart) };
+    const loopEnded = { currentCommand: `${types.fromName(types.loopEnd)} ${currentHead}` }
 
     const fullHistory = [...history, loopStarted, ...loopResult.history, loopEnded];
     const newState = { value: loopResult.value, history: fullHistory };
