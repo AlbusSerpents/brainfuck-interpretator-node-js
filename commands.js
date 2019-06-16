@@ -1,20 +1,21 @@
 const types = require('./command.types');
+const errorTypes = require('./error.types');
 
-exports.execute = (commands) => {
+exports.execute = (commands, inputArray) => {
     const initialValue = { left: [], current: 0, right: [], output: '' };
     const emptyTape = { value: initialValue, history: [{ tape: initialValue, currentCommand: null }] };
     if (!commands || commands.length == 0) {
         return emptyTape;
     } else {
-        return executeAll(commands, emptyTape);
+        return executeAll(commands, emptyTape, inputArray);
     }
 }
 
-function executeAll(commands, tape) {
-    return commands.reduce(executeCommand, tape);
+function executeAll(commands, tape, inputArray) {
+    return commands.reduce(executeCommand, tape, inputArray);
 }
 
-function executeCommand({ value, history }, command) {
+function executeCommand({ value, history }, command, inputArray) {
     switch (command.name) {
         case types.left: {
             const newValue = moveLeft(value);
@@ -37,7 +38,7 @@ function executeCommand({ value, history }, command) {
             return { value: newValue, history };
         }
         case types.write: {
-            const newValue = write(value, command.value);
+            const newValue = write(value, inputArray);
             history.push({ tape: newValue, currentCommand: `${command.name} ${command.value}` });
             return { value: newValue, history };
         }
@@ -47,7 +48,7 @@ function executeCommand({ value, history }, command) {
             return { value: newValue, history };
         }
         case types.loop: {
-            return loop({ value, history }, command);
+            return loop({ value, history }, command, inputArray);
         }
     }
 }
@@ -75,8 +76,13 @@ function decrement({ left, current, right, output }) {
     return { left, current: current === 0 ? 255 : current - 1, right, output };
 }
 
-function write({ left, right, output }, newValue) {
-    return { left, current: newValue, right, output };
+function write({ left, right, output }, inputArray) {
+    if (!inputArray || inputArray.length == 0) {
+        throw errorTypes.unexpectedInputRequest();
+    } else {
+        const newValue = inputArray.shift();
+        return { left, current: newValue, right, output };
+    }
 }
 
 function read({ left, current, right, output }) {
@@ -84,8 +90,8 @@ function read({ left, current, right, output }) {
     return { left, current, right, output: newOutput };
 }
 
-function loop({ value, history = [] }, command) {
-    const loopResult = executeAll(command.children, { value, history: [] });
+function loop({ value, history = [] }, command, inputArray) {
+    const loopResult = executeAll(command.children, { value, history: [] }, inputArray);
     const currentHead = loopResult.value.current;
 
     const loopStarted = { currentCommand: types.loopStart };
