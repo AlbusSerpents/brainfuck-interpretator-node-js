@@ -7,7 +7,13 @@ exports.execute = (commands, inputArray) => {
     if (!commands || commands.length == 0) {
         return emptyTape;
     } else {
-        return executeAll(commands, emptyTape, inputArray);
+        const result = executeAll(commands, emptyTape, inputArray);
+
+        if (inputArray && inputArray.length > 0) {
+            throw errorTypes.unusedInputs(inputArray);
+        } else {
+            return result;
+        }
     }
 }
 
