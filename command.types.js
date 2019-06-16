@@ -1,0 +1,9 @@
+exports.left = 'LEFT';
+exports.right = 'RIGHT';
+exports.increment = 'INCREMENT';
+exports.decrement = 'DECREMENT';
+exports.read = 'READ';
+exports.write = 'WRITE';
+exports.loop = 'LOOP';
+exports.loopStart = 'LOOP_START';
+exports.loopEnd = 'LOOP_END';

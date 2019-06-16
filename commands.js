@@ -1,3 +1,5 @@
+const types = require('./command.types');
+
 exports.execute = (commands) => {
     const initialValue = { left: [], current: 0, right: [], output: '' };
     const emptyTape = { value: initialValue, history: [{ tape: initialValue, currentCommand: null }] };
@@ -14,37 +16,37 @@ function executeAll(commands, tape) {
 
 function executeCommand({ value, history }, command) {
     switch (command.name) {
-        case 'Left': {
+        case types.left: {
             const newValue = moveLeft(value);
             history.push({ tape: newValue, currentCommand: command.name });
             return { value: newValue, history };
         }
-        case 'Right': {
+        case types.right: {
             const newValue = moveRight(value);
             history.push({ tape: newValue, currentCommand: command.name });
             return { value: newValue, history };
         }
-        case 'Increment': {
+        case types.increment: {
             const newValue = increment(value);
             history.push({ tape: newValue, currentCommand: command.name });
             return { value: newValue, history };
         }
-        case 'Decrement': {
+        case types.decrement: {
             const newValue = decrement(value);
             history.push({ tape: newValue, currentCommand: command.name });
             return { value: newValue, history };
         }
-        case 'Write': {
+        case types.write: {
             const newValue = write(value, command.value);
             history.push({ tape: newValue, currentCommand: `${command.name} ${command.value}` });
             return { value: newValue, history };
         }
-        case 'Read': {
+        case types.read: {
             const newValue = read(value);
             history.push({ tape: newValue, currentCommand: command.name });
             return { value: newValue, history };
         }
-        case 'Loop': {
+        case types.loop: {
             return loop({ value, history }, command);
         }
     }
@@ -86,8 +88,8 @@ function loop({ value, history = [] }, command) {
     const loopResult = executeAll(command.children, { value, history: [] });
     const currentHead = loopResult.value.current;
 
-    const loopStarted = { currentCommand: 'Loop Start' };
-    const loopEnded = { currentCommand: `Loop End ${currentHead}` }
+    const loopStarted = { currentCommand: types.loopStart };
+    const loopEnded = { currentCommand: `${types.loopEnd} ${currentHead}` }
 
     const fullHistory = [...history, loopStarted, ...loopResult.history, loopEnded];
     const newState = { value: loopResult.value, history: fullHistory };
