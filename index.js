@@ -3,7 +3,7 @@ const commands = require('./commands');
 
 exports.handler = async (event) => {
     const code = event.code;
-    const input = Array.from(event.input).map(symbol => Number(symbol));
+    const input = Array.from(event.input);
     try {
         const codeCommands = parser.parse(code);
         const result = commands.execute(codeCommands, input);

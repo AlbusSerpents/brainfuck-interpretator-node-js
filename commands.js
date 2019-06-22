@@ -87,12 +87,14 @@ function write({ left, right, output }, inputArray) {
         throw errorTypes.unexpectedInputRequest();
     } else {
         const newValue = inputArray.shift();
-        return { tape: { left, current: newValue, right, output }, input: newValue };
+        const newCurrent = newValue.charCodeAt(0);
+        return { tape: { left, current: newCurrent, right, output }, input: newCurrent };
     }
 }
 
 function read({ left, current, right, output }) {
-    const newOutput = output + current;
+    const outputSign = String.fromCharCode(current);
+    const newOutput = output + outputSign;
     return { left, current, right, output: newOutput };
 }
 
